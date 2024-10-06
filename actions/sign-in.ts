@@ -5,6 +5,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import { db } from "@/lib/db";
 import { getUserByEmail } from "@/data/user";
+import { generateVerificationToken } from "@/lib/token";
 export const signIn = async (values: z.infer<typeof signInSchema>) => {
 	const validatedFields = signInSchema.safeParse(values);
 
@@ -30,9 +31,16 @@ export const signIn = async (values: z.infer<typeof signInSchema>) => {
 			name: fullName,
 		},
 	});
-	// TODO: Send email to user for verification
+
+	const verificationToken = await generateVerificationToken(email);
+
+	if (!verificationToken) {
+		return {
+			error: "Failed to generate verification token",
+		};
+	}
 
 	return {
-		success: "Sign in successful",
+		success: "Confirmation email sent",
 	};
 };
