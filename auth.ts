@@ -10,6 +10,16 @@ const prisma = new PrismaClient();
 export const { auth, handlers, signIn, signOut } = NextAuth({
 	//https://next-auth.js.org/configuration/callbacks
 
+	// custom pages
+
+	pages: {
+		signIn: "/settings",
+		signOut: "/sign-in",
+		error: "/error",
+		// verifyRequest: "/auth/verify-request",
+		// newUser: "/auth/new-user",
+	},
+
 	//async functions don't return anything
 	// used for audit logs, handle side effects etc
 	// example if a new user do something
