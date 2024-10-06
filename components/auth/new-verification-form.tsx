@@ -2,24 +2,28 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { CardWrapper } from "./card-wrapper";
-import { Progress } from "@/components/ui/progress";
 import { newVerification } from "@/actions/new-verification";
 import { useSearchParams } from "next/navigation";
+import { FormSuccess } from "../form-success";
+import { FormError } from "../form-error";
 
 export const NewVerificationForm = () => {
-	const [progress, setProgress] = useState(0);
+	const [error, setError] = useState<string | undefined>("");
+	const [success, setSuccess] = useState<string | undefined>("");
 	const searchParams = useSearchParams();
 	const token = searchParams.get("token");
 
 	const onSubmit = useCallback(async () => {
 		if (token) {
-			await newVerification(token);
+			await newVerification(token).then((data) => {
+				setError(data.error);
+				setSuccess(data.success);
+			});
 		}
 	}, [token]);
 
 	useEffect(() => {
 		onSubmit();
-		setProgress(100);
 	}, [onSubmit]);
 
 	return (
@@ -28,12 +32,8 @@ export const NewVerificationForm = () => {
 			backButtonLabel="Back to login"
 			backButtonHref="/login"
 		>
-			<Progress value={progress} className="w-full" />
-			{progress === 100 && (
-				<p className="text-center text-sm text-green-600 mt-2">
-					Verification complete!
-				</p>
-			)}
+			<FormSuccess success={success} />
+			<FormError error={error} />
 		</CardWrapper>
 	);
 };
