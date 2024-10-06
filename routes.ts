@@ -8,7 +8,7 @@
  * Users can access these routes whether they are logged in or not.
  * @type {string[]}
  */
-export const publicPage: string[] = ["/"];
+export const publicPage: string[] = ["/", "/new-verification"]; // putting new verification page here so that user can change email from settings page
 
 /**
  * Array of protected routes that require authentication.
