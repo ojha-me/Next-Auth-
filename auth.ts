@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import authConfig from "./auth.config";
@@ -36,10 +36,29 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			});
 		},
 	},
+	// whatever you do inside the login and sign-in server action,
+	// you should also do it here to make it more secure.
+	// we do that for security reasons, for example, even if user somehow bypasses the login in the login action, unless
+	// they are verified, they cannot sign in
 	callbacks: {
+		// control whether to allow sign in or not
+		signIn: async ({ user, account }) => {
+			// allow oauth sign in
+			if (account?.provider !== "credentials") return true;
+			if (!user.id) return false;
+			const existingUser = await getUserById(user.id);
+			if (!existingUser) {
+				return false;
+			}
+			// allow email sign in if email is verified
+			if (!existingUser.emailVerified) {
+				return false;
+			}
+			return true;
+		},
+
 		// get access to the user data - first get the id from token, then
 		// get the user from the database, then add the role to the token
-
 		jwt: async ({ token }) => {
 			if (token.sub) {
 				const user = await getUserById(token.sub);
