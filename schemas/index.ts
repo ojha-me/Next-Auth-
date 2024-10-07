@@ -26,3 +26,18 @@ export const signInSchema = z
 		message: "Passwords do not match",
 		path: ["confirmPassword"],
 	});
+
+export const resetPasswordSchema = z.object({
+	email: z.string().email({
+		message: "Please enter a valid email address",
+	}),
+});
+
+export const newPasswordSchema = z.object({
+	newPassword: z.string().min(8, {
+		message: "Password must be at least 8 characters",
+	}),
+	confirmNewPassword: z.string().min(8, {
+		message: "Password must be at least 8 characters",
+	}),
+});

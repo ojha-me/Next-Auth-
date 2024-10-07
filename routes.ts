@@ -24,7 +24,12 @@ export const protectedPage: string[] = ["/settings"];
  * will be redirected to the default redirect page (typically a dashboard or home page).
  * @type {string[]}
  */
-export const authRoutes: string[] = ["/login", "/sign-in"];
+export const authRoutes: string[] = [
+	"/login",
+	"/sign-in",
+	"/reset-password",
+	"/new-password",
+];
 
 /**
  * Array of API route prefixes used for authentication purposes.
